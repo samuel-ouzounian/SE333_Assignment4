@@ -18,10 +18,13 @@ package org.apache.commons.io.input;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Arrays;
 import java.util.HashSet;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class CharacterFilterReaderTest {
 
@@ -31,7 +34,10 @@ public class CharacterFilterReaderTest {
         final HashSet<Integer> codePoints = new HashSet<>();
         codePoints.add(Integer.valueOf('a'));
         try (CharacterFilterReader reader = new CharacterFilterReader(input, 'A')) {
-            Assert.assertEquals(-1, reader.read());
+            assertEquals(-1, reader.read());
+            char[] buffer = new char[10];
+            int read = reader.read(buffer, 0, buffer.length);
+            assertEquals(-1, read);
         }
     }
 
@@ -39,7 +45,7 @@ public class CharacterFilterReaderTest {
     public void testInputSize1FilterSize1() throws IOException {
         try (StringReader input = new StringReader("a");
                 CharacterFilterReader reader = new CharacterFilterReader(input, 'a')) {
-            Assert.assertEquals(-1, reader.read());
+            assertEquals(-1, reader.read());
         }
     }
 
@@ -47,16 +53,21 @@ public class CharacterFilterReaderTest {
     public void testInputSize2FilterSize1FilterAll() throws IOException {
         final StringReader input = new StringReader("aa");
         try (CharacterFilterReader reader = new CharacterFilterReader(input, 'a')) {
-            Assert.assertEquals(-1, reader.read());
+            assertEquals(-1, reader.read());
         }
     }
 
     @Test
     public void testInputSize2FilterSize1FilterFirst() throws IOException {
-        final StringReader input = new StringReader("ab");
+        final StringReader input = new StringReader("abc");
         try (CharacterFilterReader reader = new CharacterFilterReader(input, 'a')) {
-            Assert.assertEquals('b', reader.read());
-            Assert.assertEquals(-1, reader.read());
+            assertEquals('b', reader.read());
+            char[] buffer = new char[3];
+            int read = reader.read(buffer, 0, buffer.length);
+            assertEquals(1, read);
+            assertEquals("c", new String(buffer, 0, read));
+
+            assertEquals(-1, reader.read());
         }
     }
 
@@ -64,9 +75,19 @@ public class CharacterFilterReaderTest {
     public void testInputSize2FilterSize1FilterLast() throws IOException {
         final StringReader input = new StringReader("ab");
         try (CharacterFilterReader reader = new CharacterFilterReader(input, 'b')) {
-            Assert.assertEquals('a', reader.read());
-            Assert.assertEquals(-1, reader.read());
+            assertEquals('a', reader.read());
+            assertEquals(-1, reader.read());
         }
     }
-
+    @Test
+    public void testFilteringWithGaps() throws IOException {
+        final StringReader input = new StringReader("abcd");
+        try (CharacterFilterReader reader = new CharacterFilterReader(input, 'b')) {
+            char[] buffer = new char[4];
+            int read = reader.read(buffer, 0, buffer.length);
+            assertEquals(3, read);
+            assertEquals('a', buffer[0]);
+            assertEquals('c', buffer[1]);
+        }
+    }
 }

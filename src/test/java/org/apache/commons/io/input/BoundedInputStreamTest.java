@@ -19,13 +19,13 @@ package org.apache.commons.io.input;
 import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 /**
  * Tests for {@link BoundedInputStream}.
- *
  */
 public class BoundedInputStreamTest {
 
@@ -33,7 +33,7 @@ public class BoundedInputStreamTest {
     public void testReadSingle() throws Exception {
         BoundedInputStream bounded;
         final byte[] helloWorld = "Hello World".getBytes();
-        final byte[] hello      = "Hello".getBytes();
+        final byte[] hello = "Hello".getBytes();
 
         // limit = length
         bounded = new BoundedInputStream(new ByteArrayInputStream(helloWorld), helloWorld.length);
@@ -41,6 +41,11 @@ public class BoundedInputStreamTest {
             assertEquals("limit = length byte[" + i + "]", helloWorld[i], bounded.read());
         }
         assertEquals("limit = length end", -1, bounded.read());
+
+        //max = 0
+        bounded = new BoundedInputStream(new ByteArrayInputStream(helloWorld), 0);
+        assertEquals(bounded.read(), -1);
+
 
         // limit > length
         bounded = new BoundedInputStream(new ByteArrayInputStream(helloWorld), helloWorld.length + 1);
@@ -58,11 +63,23 @@ public class BoundedInputStreamTest {
     }
 
     @Test
+    public void testSkipWithMaxZero() throws IOException {
+        final byte[] data = "Hello World".getBytes();
+        BoundedInputStream bounded;
+        bounded = new BoundedInputStream(new ByteArrayInputStream(data), 0);
+        assertEquals("Skip when max=0 should skip 0 bytes", 0, bounded.skip(5));
+        assertEquals("Read after skip with max=0 should return -1", -1, bounded.read());
+    }
+
+
+
+
+    @Test
     public void testReadArray() throws Exception {
 
         BoundedInputStream bounded;
         final byte[] helloWorld = "Hello World".getBytes();
-        final byte[] hello      = "Hello".getBytes();
+        final byte[] hello = "Hello".getBytes();
 
         bounded = new BoundedInputStream(new ByteArrayInputStream(helloWorld));
         compare("limit = -1", helloWorld, IOUtils.toByteArray(bounded));

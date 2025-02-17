@@ -216,4 +216,27 @@ public class CountingInputStreamTest {
         }
     }
 
+//    @Test
+//    public void testCountMaxValue() throws IOException {
+//        byte[] bytes = new byte[Integer.MAX_VALUE];
+//        final ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+//        try (final CountingInputStream cis = new CountingInputStream(bais)) {
+//            IOUtils.toByteArray(cis);
+//            assertEquals(Integer.MAX_VALUE, cis.getCount());
+//        }
+//    }
+//
+//    @Test
+//    public void testCountResetMaxValue() throws IOException {
+//        byte[] bytes = new byte[Integer.MAX_VALUE];
+//        final ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+//        try (final CountingInputStream cis = new CountingInputStream(bais)) {
+//            IOUtils.toByteArray(cis);
+//            assertEquals(Integer.MAX_VALUE, cis.resetCount());
+//        }
+//    }
+
+
+
+
 }

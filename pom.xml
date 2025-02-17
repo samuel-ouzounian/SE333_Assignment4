@@ -294,6 +294,35 @@ file comparators, endian transformation classes, and much more.
           <threads>10</threads>
           <timeoutConstant>48000</timeoutConstant>
           <timeoutFactor>10</timeoutFactor>
+          <threads>10</threads>
+          <timeoutConstant>48000</timeoutConstant>
+          <timeoutFactor>10</timeoutFactor>
+<!--          <targetClasses>-->
+<!--            <param>org.apache.commons.io.output.*</param>-->
+<!--            <param>org.apache.commons.io.input.*</param>-->
+<!--          </targetClasses>-->
+<!--          <targetTests>-->
+<!--            <param>org.apache.commons.io.output.*</param>-->
+<!--            <param>org.apache.commons.io.input.*</param>-->
+<!--          </targetTests>-->
+<!--          <mutators>-->
+<!--            <mutator>CONDITIONALS_BOUNDARY</mutator>-->
+<!--            <mutator>NEGATE_CONDITIONALS</mutator>-->
+<!--          </mutators>-->
+          <targetClasses>
+            <param>org.apache.commons.io.input.AbstractCharacterFilterReader</param>
+            <param>org.apache.commons.io.input.CountingInputStream</param>
+            <param>org.apache.commons.io.input.BoundedInputStream</param>
+          </targetClasses>
+          <targetTests>
+            <param>org.apache.commons.io.input.CharacterFilterReaderTest</param>
+            <param>org.apache.commons.io.input.CountingInputStreamTest</param>
+            <param>org.apache.commons.io.input.BoundedInputStreamTest</param>
+          </targetTests>
+          <mutators>
+            <mutator>CONDITIONALS_BOUNDARY</mutator>
+            <mutator>NEGATE_CONDITIONALS</mutator>
+          </mutators>
         </configuration>
         <executions>
           <execution>
